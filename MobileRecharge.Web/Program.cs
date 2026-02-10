@@ -27,6 +27,8 @@ namespace MobileRecharge.Web
             builder.Services.AddScoped<IRechargeRepository, RechargeRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+            builder.Services.AddScoped<IPaymentGatewayService, MockPaymentGatewayService>();
+
 
             // Services
             builder.Services.AddScoped<IRechargeService, RechargeService>();

@@ -9,6 +9,8 @@ namespace MobileRecharge.Application.Interfaces
 {
     public interface IRechargeRepository
     {
-        int CreateRecharge(RechargeRequestDto request);
+        //int CreateRecharge(RechargeRequestDto request);
+        int CreateRecharge(CreateRechargeDto request);
+
     }
 }

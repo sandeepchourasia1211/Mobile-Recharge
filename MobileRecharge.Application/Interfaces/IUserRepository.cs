@@ -9,6 +9,8 @@ namespace MobileRecharge.Application.Interfaces
     public interface IUserRepository
     {
         int GetUserIdByMobile(string mobileNumber);
+        int CreateUserByMobile(string mobileNumber);
+        decimal GetWalletBalanceByUserId(int userId);
 
         bool DeductBalance(int userId, decimal amount);
     }

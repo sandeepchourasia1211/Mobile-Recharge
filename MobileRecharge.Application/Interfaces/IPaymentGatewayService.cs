@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace MobileRecharge.Application.Interfaces
 {
-    public interface IRechargeService
+    public interface IPaymentGatewayService
     {
-        //RechargeResponseDto DoRecharge(RechargeRequestDto request);
-        RechargeResponseDto DoRecharge(RechargeRequestDto request, string paymentMethod);
-
+        PaymentResponseDto ProcessPayment(PaymentRequestDto request);
     }
 }

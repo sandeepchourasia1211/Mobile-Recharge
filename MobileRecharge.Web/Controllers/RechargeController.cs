@@ -6,19 +6,28 @@ namespace MobileRecharge.Web.Controllers
 {
     public class RechargeController : Controller
     {
+        private readonly IRechargeService _rechargeService;
         private readonly IPlanRepository _planRepository;
-        public RechargeController(IRechargeService rechargeService,IPlanRepository planRepository)
+
+        public RechargeController(
+            IRechargeService rechargeService,
+            IPlanRepository planRepository)
         {
             _rechargeService = rechargeService;
             _planRepository = planRepository;
         }
 
+        // =========================
+        // RECHARGE HOME
+        // =========================
         public IActionResult Index()
         {
             return View();
         }
-        private readonly IRechargeService _rechargeService;
 
+        // =========================
+        // LOAD PLANS (AJAX)
+        // =========================
         [HttpGet]
         public IActionResult GetPlans(int operatorId)
         {
@@ -26,19 +35,56 @@ namespace MobileRecharge.Web.Controllers
             return Json(plans);
         }
 
+        // =========================
+        // SUBMIT RECHARGE
+        // =========================
         [HttpPost]
-        public IActionResult DoRecharge(RechargeRequestDto request)
+        public IActionResult DoRecharge(RechargeRequestDto request, string PaymentMethod)
         {
-            //if (!ModelState.IsValid)
-            //    return View("Index", request);
+            if (!ModelState.IsValid || string.IsNullOrEmpty(PaymentMethod))
+            {
+                ModelState.AddModelError("", "Please complete all required fields");
+                return View("Index", request);
+            }
 
-            //RechargeResponseDto rechargeId = _rechargeService.DoRecharge(request);
-            //ViewBag.RechargeId = rechargeId;
+            // =========================
+            // CASE 1: WALLET PAYMENT
+            // =========================
+            if (PaymentMethod == "WALLET")
+            {
+                var result = _rechargeService.DoRecharge(request, "WALLET");
 
-            //return View("Result");
+                if (!result.IsSuccess)
+                {
+                    ModelState.AddModelError("", result.Message);
+                    return View("Index", request);
+                }
 
-            var result = _rechargeService.DoRecharge(request);
-            return View("Result", result);
+                return View("Result", result);
+            }
+
+            // =========================
+            // CASE 2: UPI PAYMENT
+            // =========================
+            if (PaymentMethod == "UPI")
+            {
+                return RedirectToAction(
+                    "Upi",
+                    "Payment",
+                    new PaymentRequestDto
+                    {
+                        MobileNumber = request.MobileNumber,
+                        OperatorId = request.OperatorId,
+                        Amount = request.Amount,
+                        PaymentMethod = "UPI"
+                    });
+            }
+
+            // =========================
+            // CASE 3: CARD / NET BANKING (future)
+            // =========================
+            ModelState.AddModelError("", "Selected payment method is not supported yet.");
+            return View("Index", request);
         }
     }
 }

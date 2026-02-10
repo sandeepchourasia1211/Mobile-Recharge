@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace MobileRecharge.Domain.DTOs
 {
-    public class RechargeResponseDto
+    public class PaymentResponseDto
     {
         public bool IsSuccess { get; set; }
+        public string TransactionId { get; set; }
         public string Message { get; set; }
-        public int RechargeId { get; set; }
-        public bool RequiresExternalPayment { get; set; }
     }
 }

@@ -18,6 +18,16 @@ namespace MobileRecharge.Infrastructure.Repositories
         {
             _db = db;
         }
+
+        public decimal GetWalletBalanceByUserId(int userId)
+        {
+            using var conn = _db.CreateConnection();
+
+            return conn.ExecuteScalar<decimal>(
+                "SELECT WalletBalance FROM Users WHERE UserId = @UserId",
+                new { UserId = userId });
+        }
+
         public int GetUserIdByMobile(string mobileNumber)
         {
             using var conn = _db.CreateConnection();
@@ -25,6 +35,26 @@ namespace MobileRecharge.Infrastructure.Repositories
                 "SELECT UserId FROM Users WHERE MobileNumber = @MobileNumber AND IsActive = 1",
                 new { MobileNumber = mobileNumber });
         }
+        public int CreateUserByMobile(string mobileNumber)
+        {
+            using var conn = _db.CreateConnection();
+
+            return conn.ExecuteScalar<int>(
+                @"
+                IF EXISTS (SELECT 1 FROM Users WHERE MobileNumber = @MobileNumber)
+                BEGIN
+                  SELECT UserId FROM Users WHERE MobileNumber = @MobileNumber
+                END
+                ELSE
+                BEGIN
+                INSERT INTO Users (FullName, MobileNumber, IsActive)
+                OUTPUT INSERTED.UserId
+                VALUES ('New User', @MobileNumber, 1)
+                END
+                ",
+                new { MobileNumber = mobileNumber });
+        }
+
 
 
         public bool DeductBalance(int userId, decimal amount)

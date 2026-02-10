@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace MobileRecharge.Domain.DTOs
 {
-    public class PaymentRequestDto
+    public class CreateRechargeDto
     {
-        public string MobileNumber { get; set; }
+        public int UserId { get; set; }
         public int OperatorId { get; set; }
-        public int PlanId { get; set; }
         public decimal Amount { get; set; }
-        public string PaymentMethod { get; set; }
     }
 }

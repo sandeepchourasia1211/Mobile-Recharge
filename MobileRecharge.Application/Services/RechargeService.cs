@@ -1,5 +1,6 @@
 ﻿using MobileRecharge.Application.Interfaces;
 using MobileRecharge.Domain.DTOs;
+using MobileRecharge.Domain.Entities;
 
 namespace MobileRecharge.Application.Services
 {
@@ -16,22 +17,20 @@ namespace MobileRecharge.Application.Services
             _userRepository = userRepository;
         }
 
-        public RechargeResponseDto DoRecharge(RechargeRequestDto request)
+        public RechargeResponseDto DoRecharge(RechargeRequestDto request, string paymentMethod)
         {
             // 1. Get UserId using Mobile Number
             int userId = _userRepository.GetUserIdByMobile(request.MobileNumber);
 
+           
+            // Auto-create user if not exists
             if (userId <= 0)
             {
-                return new RechargeResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Invalid mobile number"
-                };
+                userId = _userRepository.CreateUserByMobile(request.MobileNumber);
             }
 
             // 2. Create new request with UserId
-            var dbRequest = new RechargeRequestDto
+            var dbRequest = new CreateRechargeDto
             {
                 UserId = userId,
                 OperatorId = request.OperatorId,
@@ -39,13 +38,32 @@ namespace MobileRecharge.Application.Services
             };
 
             // 3. Create Recharge
-            int rechargeId = _rechargeRepo.CreateRecharge(dbRequest);
+            decimal walletBalance = _userRepository.GetWalletBalanceByUserId(userId);
 
+            // Only block if user selected WALLET
+            if (paymentMethod == PaymentMethods.WALLET)
+            {
+                walletBalance = _userRepository.GetWalletBalanceByUserId(userId);
+                if (walletBalance < request.Amount)
+                {
+                    return new RechargeResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "Insufficient wallet balance. Please choose UPI, Card, or NetBanking."
+                    };
+                }
+            }
+
+            // If payment is external (UPI / CARD / NETBANKING)
+            // we DO NOT check wallet here
+
+
+            // Wallet cannot pay → use external payment
             return new RechargeResponseDto
             {
-                IsSuccess = true,
-                Message = "Recharge Successful",
-                RechargeId = rechargeId
+                IsSuccess = false,
+                Message = "Wallet balance is insufficient. Please choose another payment method.",
+                RequiresExternalPayment = true
             };
         }
     }
