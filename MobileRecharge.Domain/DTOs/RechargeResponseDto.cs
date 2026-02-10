@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MobileRecharge.Domain.DTOs
 {
-    internal class RechargeResponseDto
+    public class RechargeResponseDto
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
