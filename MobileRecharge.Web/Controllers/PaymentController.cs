@@ -17,6 +17,7 @@ namespace MobileRecharge.Web.Controllers
             _rechargeService = rechargeService;
         }
 
+        // ===================== UPI =====================
         [HttpGet]
         public IActionResult Upi(PaymentRequestDto model)
         {
@@ -24,7 +25,7 @@ namespace MobileRecharge.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProcessUpiPayment(PaymentRequestDto model, string UpiId)
+        public IActionResult ProcessUpi(PaymentRequestDto model, string UpiId)
         {
             if (string.IsNullOrEmpty(UpiId))
             {
@@ -32,16 +33,46 @@ namespace MobileRecharge.Web.Controllers
                 return View("Upi", model);
             }
 
-            // Mock UPI validation
+            return CompletePaymentAndRecharge(model);
+        }
+
+        // ===================== CARD =====================
+        [HttpGet]
+        public IActionResult Card(PaymentRequestDto model)
+        {
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult ProcessCard(PaymentRequestDto model)
+        {
+            return CompletePaymentAndRecharge(model);
+        }
+
+        // ===================== NET BANKING =====================
+        [HttpGet]
+        public IActionResult NetBanking(PaymentRequestDto model)
+        {
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult ProcessNetBanking(PaymentRequestDto model)
+        {
+            return CompletePaymentAndRecharge(model);
+        }
+
+        // ===================== COMMON =====================
+        private IActionResult CompletePaymentAndRecharge(PaymentRequestDto model)
+        {
             var paymentResult = _paymentGatewayService.ProcessPayment(model);
 
             if (!paymentResult.IsSuccess)
             {
                 ModelState.AddModelError("", paymentResult.Message);
-                return View("Upi", model);
+                return View();
             }
 
-            // Payment success → Recharge
             var rechargeResult = _rechargeService.DoRecharge(
                 new RechargeRequestDto
                 {
@@ -49,7 +80,7 @@ namespace MobileRecharge.Web.Controllers
                     OperatorId = model.OperatorId,
                     Amount = model.Amount
                 },
-                "UPI");
+                model.PaymentMethod);
 
             return View("~/Views/Recharge/Result.cshtml", rechargeResult);
         }

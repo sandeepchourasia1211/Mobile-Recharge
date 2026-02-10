@@ -1,0 +1,18 @@
+﻿@model MobileRecharge.Domain.DTOs.PaymentRequestDto
+
+<form asp-action="ProcessNetBanking" method="post">
+    <input type="hidden" asp-for="MobileNumber" />
+    <input type="hidden" asp-for="OperatorId" />
+    <input type="hidden" asp-for="Amount" />
+    <input type="hidden" asp-for="PaymentMethod" value="NETBANKING" />
+
+    <select class="form-select mb-3" required>
+        <option value="">-- Select Bank --</option>
+        <option>SBI</option>
+        <option>HDFC</option>
+        <option>ICICI</option>
+        <option>Axis</option>
+    </select>
+
+    <button class="btn btn-success w-100">Pay ₹@Model.Amount</button>
+</form>
