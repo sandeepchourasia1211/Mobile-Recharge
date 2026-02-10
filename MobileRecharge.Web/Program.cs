@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Connections;
 using MobileRecharge.Application.Interfaces;
 using MobileRecharge.Application.Services;
+using MobileRecharge.Infrastructure.Db;
+using MobileRecharge.Infrastructure.Repositories;
 //using MobileRecharge.Infrastructure.Db;
 //using MobileRecharge.Infrastructure.Interfaces;
 //using MobileRecharge.Infrastructure.Repositories;
@@ -19,11 +21,12 @@ namespace MobileRecharge.Web
             builder.Configuration.GetConnectionString("DefaultConnection");
 
             // DB Connection Factory
-            //builder.Services.AddSingleton(new DbConnectionFactory(connectionString));
+            builder.Services.AddSingleton(new DbConnectionFactory(connectionString));
 
-            //// Repositories
-            //builder.Services.AddScoped<IRechargeRepository, RechargeRepository>();
-            //builder.Services.AddScoped<IUserRepository, UserRepository>();
+            // Repositories
+            builder.Services.AddScoped<IRechargeRepository, RechargeRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
             // Services
             builder.Services.AddScoped<IRechargeService, RechargeService>();
@@ -49,7 +52,8 @@ namespace MobileRecharge.Web
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                 pattern: "{controller=Recharge}/{action=Index}/{id?}");
+                //pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

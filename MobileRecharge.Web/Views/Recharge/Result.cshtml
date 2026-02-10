@@ -1,0 +1,24 @@
+﻿@model MobileRecharge.Domain.DTOs.RechargeResponseDto
+
+@{
+    ViewData["Title"] = "Recharge Result";
+}
+
+<h2>Recharge Status</h2>
+
+@if (Model.IsSuccess)
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @Model.Message
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">
+        <strong>Failed!</strong> @Model.Message
+    </div>
+}
+
+<a asp-action="Index" asp-controller="Recharge" class="btn btn-secondary">
+    Back to Recharge
+</a>

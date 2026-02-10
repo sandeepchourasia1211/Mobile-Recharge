@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobileRecharge.Infrastructure.Interfaces
+namespace MobileRecharge.Application.Interfaces
 {
     public interface IUserRepository
     {
+        int GetUserIdByMobile(string mobileNumber);
+
         bool DeductBalance(int userId, decimal amount);
     }
 }

@@ -10,5 +10,6 @@ namespace MobileRecharge.Domain.Entities
     {
         public int OperatorId { get; set; }
         public string OperatorName { get; set; }
+        public string OperatorType { get; set; }
     }
 }

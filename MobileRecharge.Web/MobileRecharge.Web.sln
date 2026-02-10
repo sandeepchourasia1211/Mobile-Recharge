@@ -5,6 +5,14 @@ VisualStudioVersion = 17.14.36705.20 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileRecharge.Web", "MobileRecharge.Web.csproj", "{575A4AC9-2198-44B4-A4BB-4DF1371D1A76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileRecharge.Application", "..\MobileRecharge.Application\MobileRecharge.Application.csproj", "{3CBDEECC-271D-4F93-889E-2F90CAA26410}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileRecharge.Domain", "..\MobileRecharge.Domain\MobileRecharge.Domain.csproj", "{34501B3F-3EDA-46AF-B87E-574D964E4B0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileRecharge.Infrastructure", "..\MobileRecharge.Infrastructure\MobileRecharge.Infrastructure.csproj", "{3678B498-97A5-44AC-A014-94F2263B9685}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileRecharge.Database", "..\MobileRecharge.Database\MobileRecharge.Database.csproj", "{22F04437-6B68-4DD2-840D-A2170C2A5848}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,22 @@ Global
 		{575A4AC9-2198-44B4-A4BB-4DF1371D1A76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{575A4AC9-2198-44B4-A4BB-4DF1371D1A76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{575A4AC9-2198-44B4-A4BB-4DF1371D1A76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CBDEECC-271D-4F93-889E-2F90CAA26410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CBDEECC-271D-4F93-889E-2F90CAA26410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CBDEECC-271D-4F93-889E-2F90CAA26410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CBDEECC-271D-4F93-889E-2F90CAA26410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34501B3F-3EDA-46AF-B87E-574D964E4B0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34501B3F-3EDA-46AF-B87E-574D964E4B0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34501B3F-3EDA-46AF-B87E-574D964E4B0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34501B3F-3EDA-46AF-B87E-574D964E4B0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3678B498-97A5-44AC-A014-94F2263B9685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3678B498-97A5-44AC-A014-94F2263B9685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3678B498-97A5-44AC-A014-94F2263B9685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3678B498-97A5-44AC-A014-94F2263B9685}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22F04437-6B68-4DD2-840D-A2170C2A5848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22F04437-6B68-4DD2-840D-A2170C2A5848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22F04437-6B68-4DD2-840D-A2170C2A5848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22F04437-6B68-4DD2-840D-A2170C2A5848}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

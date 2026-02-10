@@ -8,9 +8,12 @@ namespace MobileRecharge.Domain.Entities
 {
     internal class Transaction
     {
-        public int TransactionId { get; set; }
-        public int RechargeId { get; set; }
-        public string Status { get; set; }
+        public int WalletTxnId { get; set; }
+        public int UserId { get; set; }
+        public int? RechargeId { get; set; }
+        public decimal Amount { get; set; }
+        public string TransactionType { get; set; } // CREDIT / DEBIT
+        public decimal BalanceAfterTxn { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

@@ -1,11 +1,8 @@
-﻿using MobileRecharge.Domain.DTOs;
+﻿using Dapper;
+using MobileRecharge.Application.Interfaces;
+using MobileRecharge.Domain.DTOs;
 using MobileRecharge.Infrastructure.Db;
-using MobileRecharge.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 
 namespace MobileRecharge.Infrastructure.Repositories
 {
@@ -20,14 +17,11 @@ namespace MobileRecharge.Infrastructure.Repositories
 
         public int CreateRecharge(RechargeRequestDto request)
         {
-            //using var conn = _db.CreateConnection();
-            //return conn.ExecuteScalar<int>(
-            //    "sp_CreateRecharge",
-            //    request,
-            //    commandType: System.Data.CommandType.StoredProcedure);
-            return 0;
+            using var conn = _db.CreateConnection();
+            return conn.ExecuteScalar<int>(
+                "sp_CreateRecharge",
+                request,
+                commandType: CommandType.StoredProcedure);
         }
-
-        
     }
 }

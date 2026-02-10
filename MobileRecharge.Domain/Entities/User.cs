@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace MobileRecharge.Domain.Entities
 {
-    internal class User
+    public class User
     {
         public int UserId { get; set; }
-        public string Name { get; set; }
+        public string FullName { get; set; }
         public string MobileNumber { get; set; }
+        public string Email { get; set; }
         public decimal WalletBalance { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

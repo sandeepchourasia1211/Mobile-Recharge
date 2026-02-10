@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobileRecharge.Infrastructure.Interfaces
+namespace MobileRecharge.Application.Interfaces
 {
     public interface IRechargeRepository
     {

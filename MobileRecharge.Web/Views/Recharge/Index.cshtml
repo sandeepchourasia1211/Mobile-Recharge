@@ -1,0 +1,535 @@
+﻿@model MobileRecharge.Domain.DTOs.RechargeRequestDto
+
+@{
+    ViewData["Title"] = "Mobile Recharge";
+}
+@* <style>
+    .card {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    #planDetails {
+        transition: visibility 0.2s ease-in-out;
+    }
+</style> *@
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-lg rounded-4">
+                <div class="card-header bg-primary text-white text-center fs-4">
+                    📱 Mobile Recharge
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="DoRecharge" method="post">
+
+                        <!-- Mobile Number -->
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input asp-for="MobileNumber"
+                                   class="form-control"
+                                   placeholder="Enter mobile number" required/>
+                            <span asp-validation-for="MobileNumber"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <!-- Operator -->
+                        <div class="mb-3">
+                            <label class="form-label">Operator</label>
+                            <select asp-for="OperatorId"
+                                    class="form-select"
+                                    id="OperatorId" required>
+                                <option value="">-- Select Operator --</option>
+                                <option value="1">Jio</option>
+                                <option value="2">Airtel</option>
+                                <option value="3">VI</option>
+                            </select>
+                            <span asp-validation-for="OperatorId"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <!-- Recharge Plan -->
+                        <div class="mb-3">
+                            <label class="form-label">Recharge Plan</label>
+                            <select class="form-select" id="planDropdown" required>
+                                <option value="">-- Select Plan --</option>
+                            </select>
+                        </div>
+
+                        <!-- Plan Details -->
+                        <div id="planDetails"
+                             class="card border-success mb-3"
+                             style="min-height:120px; visibility:hidden;">
+                            <div class="card-body">
+                                <h6 class="card-title text-success">
+                                    📦 Plan Details
+                                </h6>
+                                <p class="mb-1">
+                                    <strong>Amount:</strong>
+                                    ₹<span id="planAmount"></span>
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Validity:</strong>
+                                    <span id="planValidity"></span> days
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Benefits:</strong>
+                                    <span id="planDesc"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Amount (NO asp-for – important) -->
+                        <div class="mb-3">
+                            <label class="form-label">Amount</label>
+                            <input type="text"
+                                   name="Amount"
+                                   id="Amount"
+                                   class="form-control"
+                                   readonly />
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-success w-100 mt-3">
+                            ⚡ Recharge Now
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const operatorDropdown = document.getElementById("OperatorId");
+        const planDropdown = document.getElementById("planDropdown");
+        const planDetails = document.getElementById("planDetails");
+        const amountInput = document.getElementById("Amount");
+
+        // Safety check
+        if (!operatorDropdown || !planDropdown) {
+            console.error("Required elements not found in DOM");
+            return;
+        }
+
+        // Load plans when operator changes
+        operatorDropdown.addEventListener("change", function () {
+
+            const operatorId = this.value;
+            planDropdown.innerHTML =
+                '<option value="">-- Select Plan --</option>';
+            planDetails.style.display = "none";
+
+            if (!operatorId) return;
+
+            fetch(`/Recharge/GetPlans?operatorId=${operatorId}`)
+                .then(res => res.json())
+                .then(plans => {
+
+                    plans.forEach(plan => {
+                        const option = document.createElement("option");
+
+                        option.value = plan.planId;
+                        option.textContent =
+                                         `${plan.planName} | ₹${plan.amount} | ${plan.validityDays} Days | ${plan.description}`;
+
+
+                        // Store extra details safely
+                        option.setAttribute("data-amount", plan.amount);
+                        option.setAttribute("data-validity", plan.validityDays);
+                        option.setAttribute("data-desc", plan.description);
+
+                        planDropdown.appendChild(option);
+                    });
+                })
+                .catch(err =>
+                    console.error("Error loading plans:", err));
+        });
+
+        // Show plan details when plan selected
+        planDropdown.addEventListener("change", function () {
+
+            const selected =
+                this.options[this.selectedIndex];
+
+            if (!selected ||
+                !selected.getAttribute("data-amount")) {
+
+                
+                return;
+            }
+
+            document.getElementById("planAmount").innerText =
+                selected.getAttribute("data-amount");
+
+            document.getElementById("planValidity").innerText =
+                selected.getAttribute("data-validity");
+
+            document.getElementById("planDesc").innerText =
+                selected.getAttribute("data-desc");
+
+            amountInput.value =
+                selected.getAttribute("data-amount");
+
+                planDetails.style.visibility = "hidden";
+
+                planDetails.style.visibility = "visible";
+        });
+
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @model MobileRecharge.Domain.DTOs.RechargeRequestDto
+
+@{
+    ViewData["Title"] = "Mobile Recharge";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-lg rounded-4">
+                <div class="card-header bg-primary text-white text-center fs-4">
+                    📱 Mobile Recharge
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="DoRecharge" method="post" id="rechargeForm">
+
+                        <!-- Mobile Number -->
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input asp-for="MobileNumber" class="form-control" placeholder="Enter mobile number" />
+                            <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                        </div>
+
+                        <!-- Operator -->
+                        <div class="mb-3">
+                            <label class="form-label">Operator</label>
+                            <select asp-for="OperatorId" class="form-select" id="OperatorId">
+                                <option value="">-- Select Operator --</option>
+                                <option value="1">Jio</option>
+                                <option value="2">Airtel</option>
+                                <option value="3">VI</option>
+                            </select>
+                            <span asp-validation-for="OperatorId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Plans -->
+                        <div class="mb-3">
+                            <label class="form-label">Recharge Plan</label>
+                            <select class="form-select" id="planDropdown">
+                                <option value="">-- Select Plan --</option>
+                            </select>
+                        </div>
+
+                        <!-- Plan Details -->
+                        <div id="planDetails" class="border rounded p-3 mb-3 bg-light d-none">
+                            <p><strong>Amount:</strong> ₹<span id="planAmount"></span></p>
+                            <p><strong>Validity:</strong> <span id="planValidity"></span> days</p>
+                            <p><strong>Description:</strong> <span id="planDesc"></span></p>
+                        </div>
+
+                        <!-- Amount (readonly, auto-filled) -->
+                        <div class="mb-3">
+                            <label class="form-label">Amount</label>
+                            <input asp-for="Amount" class="form-control" id="Amount" readonly />
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">
+                            ⚡ Recharge Now
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const operatorDropdown = document.getElementById("OperatorId");
+        const planDropdown = document.getElementById("planDropdown");
+        const planDetails = document.getElementById("planDetails");
+
+        operatorDropdown.addEventListener("change", function () {
+            const operatorId = this.value;
+
+            planDropdown.innerHTML = '<option value="">-- Select Plan --</option>';
+            planDetails.classList.add("d-none");
+
+            if (!operatorId) return;
+
+            fetch(`/Recharge/GetPlans?operatorId=${operatorId}`)
+                .then(res => res.json())
+                .then(plans => {
+                    plans.forEach(plan => {
+                        const option = document.createElement("option");
+                        option.value = plan.planId;
+                        option.text = `${plan.planName} - ₹${plan.amount}`;
+                        option.dataset.amount = plan.amount;
+                        option.dataset.validity = plan.validityDays;
+                        option.dataset.desc = plan.description;
+                        planDropdown.appendChild(option);
+                    });
+                });
+        });
+
+        planDropdown.addEventListener("change", function () {
+            const selected = this.options[this.selectedIndex];
+
+            if (!selected || !selected.dataset.amount) {
+                planDetails.classList.add("d-none");
+                return;
+            }
+
+            document.getElementById("planAmount").innerText = selected.dataset.amount;
+            document.getElementById("planValidity").innerText = selected.dataset.validity;
+            document.getElementById("planDesc").innerText = selected.dataset.desc;
+
+            document.getElementById("Amount").value = selected.dataset.amount;
+
+            planDetails.classList.remove("d-none");
+        });
+
+    });
+</script>
+ *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+@model MobileRecharge.Domain.DTOs.RechargeRequestDto
+
+<form asp-action="DoRecharge" method="post">
+
+    <!-- UserId (normally from session / auth) -->
+    @* <input type="hidden" asp-for="UserId" value="1" /> *@
+
+
+@*     <div class="form-group">
+    <label>Mobile Number</label>
+    <input asp-for="MobileNumber" class="form-control" />
+    <span asp-validation-for="MobileNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Operator</label>
+        <select asp-for="OperatorId" class="form-control">
+            <option value="">-- Select Operator --</option>
+            <option value="1">Jio</option>
+            <option value="2">Airtel</option>
+            <option value="3">VI</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Recharge Plan</label>
+        <select id="planDropdown" class="form-control">
+            <option value="">-- Select Plan --</option>
+        </select>
+    </div>
+
+    <div id="planDetails" style="display:none;">
+        <p><strong>Amount:</strong> ₹<span id="amount"></span></p>
+        <p><strong>Validity:</strong> <span id="validity"></span> days</p>
+        <p><strong>Description:</strong> <span id="desc"></span></p>
+    </div>
+
+
+    <div class="form-group">
+        <label>Amount</label>
+        <input asp-for="Amount" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Recharge
+    </button>
+</form>
+
+
+
+
+
+
+
+<script>
+    document.getElementById("OperatorId").addEventListener("change", function () {
+        fetch(`/Recharge/GetPlans?operatorId=${this.value}`)
+            .then(res => res.json())
+            .then(data => {
+                let ddl = document.getElementById("planDropdown");
+                ddl.innerHTML = '<option value="">-- Select Plan --</option>';
+                data.forEach(p => {
+                    ddl.innerHTML += `<option value="${p.planId}"
+                        data-amount="${p.amount}"
+                        data-validity="${p.validityDays}"
+                        data-desc="${p.description}">
+                        ${p.planName}
+                    </option>`;
+                });
+            });
+    });
+
+    document.getElementById("planDropdown").addEventListener("change", function () {
+        let opt = this.options[this.selectedIndex];
+        document.getElementById("amount").innerText = opt.dataset.amount;
+        document.getElementById("validity").innerText = opt.dataset.validity;
+        document.getElementById("desc").innerText = opt.dataset.desc;
+        document.getElementById("planDetails").style.display = "block";
+    });
+</script> *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @model MobileRecharge.Domain.DTOs.RechargeRequestDto
+
+@{
+    ViewData["Title"] = "Mobile Recharge";
+}
+
+<h2>Mobile Recharge</h2>
+
+<form asp-action="DoRecharge" asp-controller="Recharge" method="post">
+    <div class="form-group">
+        <label>Mobile Number</label>
+        <input asp-for="MobileNumber" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Operator</label>
+        <select asp-for="Operator" class="form-control">
+            <option value="">-- Select Operator --</option>
+            <option value="Jio">Jio</option>
+            <option value="Airtel">Airtel</option>
+            <option value="VI">VI</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Amount</label>
+        <input asp-for="Amount" class="form-control" />
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary">
+        Recharge
+    </button>
+</form> *@

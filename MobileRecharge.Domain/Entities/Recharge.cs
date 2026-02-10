@@ -12,6 +12,7 @@ namespace MobileRecharge.Domain.Entities
         public int UserId { get; set; }
         public int OperatorId { get; set; }
         public decimal Amount { get; set; }
+        public string StatusName { get; set; }
         public DateTime RechargeDate { get; set; }
     }
 }

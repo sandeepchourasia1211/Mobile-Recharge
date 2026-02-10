@@ -1,33 +1,45 @@
 ﻿using MobileRecharge.Application.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MobileRecharge.Domain.DTOs;
 
 namespace MobileRecharge.Application.Services
 {
     public class RechargeService : IRechargeService
     {
         private readonly IRechargeRepository _rechargeRepo;
-        private readonly IPaymentService _paymentService;
+        private readonly IUserRepository _userRepository;
 
         public RechargeService(
             IRechargeRepository rechargeRepo,
-            IPaymentService paymentService)
+            IUserRepository userRepository)
         {
             _rechargeRepo = rechargeRepo;
-            _paymentService = paymentService;
+            _userRepository = userRepository;
         }
 
         public RechargeResponseDto DoRecharge(RechargeRequestDto request)
         {
-            bool paymentStatus = _paymentService.ProcessPayment(request.UserId, request.Amount);
+            // 1. Get UserId using Mobile Number
+            int userId = _userRepository.GetUserIdByMobile(request.MobileNumber);
 
-            if (!paymentStatus)
-                return new RechargeResponseDto { IsSuccess = false, Message = "Payment Failed" };
+            if (userId <= 0)
+            {
+                return new RechargeResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Invalid mobile number"
+                };
+            }
 
-            int rechargeId = _rechargeRepo.CreateRecharge(request);
+            // 2. Create new request with UserId
+            var dbRequest = new RechargeRequestDto
+            {
+                UserId = userId,
+                OperatorId = request.OperatorId,
+                Amount = request.Amount
+            };
+
+            // 3. Create Recharge
+            int rechargeId = _rechargeRepo.CreateRecharge(dbRequest);
 
             return new RechargeResponseDto
             {
